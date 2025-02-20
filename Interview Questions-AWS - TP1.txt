@@ -1,0 +1,144 @@
+Q. Imagine you are tasked with setting up an EKS cluster for a new application. How would you approach this task, and what steps would you take?
+
+Answer:
+
+•	Start by creating an Amazon EKS cluster using the AWS Management Console, AWS CLI, or an Infrastructure-as-Code (IaC) tool like Terraform.
+•	Ensure that the necessary IAM roles and policies are created to allow EKS to manage Kubernetes resources on your behalf.
+•	Configure networking by creating a VPC with public and private subnets, route tables, and security groups.
+•	Launch worker nodes (EC2 instances) and connect them to the EKS cluster using the appropriate IAM instance profile.
+•	Install kubectl to interact with the cluster and configure the kubeconfig file to authenticate with the EKS cluster.
+•	Deploy the Kubernetes add-ons like CoreDNS, kube-proxy, and Cluster Autoscaler to optimize cluster performance.
+
+
+Q. How would you deploy a multi-tier application with a web frontend, a backend service, and a database in EKS?
+
+Web Frontend: Create a Deployment and Service resource for the frontend. Use a LoadBalancer service type to expose it to external traffic.
+
+Backend Service: Create a Deployment for the backend and expose it within the cluster using a ClusterIP service type.
+
+Database: Use StatefulSets for database pods to maintain stable network identities and persistent storage. 
+Configure PersistentVolumeClaims (PVCs) for data storage.
+
+Use Kubernetes ConfigMaps and Secrets to manage configuration and sensitive data like database credentials.
+
+Implement NetworkPolicies to ensure secure communication between frontend, backend, and database.
+
+Q. Your application experiences a spike in traffic. How would you handle scaling in an EKS cluster?
+
+Answer:
+
+•	Horizontal Pod Autoscaler (HPA): Configure HPA to automatically scale the number of pods based on CPU or memory usage.
+•	Cluster Autoscaler: Ensure Cluster Autoscaler is deployed in the cluster to add or remove worker nodes based on the resource demands.
+•	Use the AWS Auto Scaling Groups feature to manage EC2 instances effectively.
+•	Monitor application performance using CloudWatch and Prometheus to ensure scaling policies are effective.
+
+
+Q. What steps would you take to secure an EKS cluster in production? (explore all the points)
+
+Answer:
+
+Use AWS Identity and Access Management (IAM) roles for service accounts to control access to AWS resources.
+Enable Kubernetes Role-Based Access Control (RBAC) to enforce least privilege access within the cluster.
+Restrict API server access using security groups and CIDR blocks.
+Use Secrets to store sensitive data and integrate with AWS Secrets Manager or Parameter Store for enhanced security.
+Regularly patch Kubernetes and worker node operating systems to fix vulnerabilities.
+Enable AWS GuardDuty to detect threats in the EKS environment.
+
+Q. How would you upgrade an EKS cluster to a newer Kubernetes version?
+
+Answer:
+
+Begin by reviewing the EKS release notes to understand the changes and compatibility requirements.
+Upgrade the control plane to the desired Kubernetes version via the AWS Management Console or CLI.
+Verify the upgrade by ensuring that workloads continue to function as expected.
+Upgrade the kube-proxy, CoreDNS, and other Kubernetes add-ons to match the new Kubernetes version.
+Update the worker nodes by launching new nodes with the updated AMI and gradually replacing the old ones.
+
+Q. How would you set up monitoring and logging for an EKS cluster?
+
+Answer:
+
+Deploy Prometheus and Grafana for Kubernetes metrics monitoring.
+Use Fluentd or Fluent Bit to ship logs to Amazon CloudWatch Logs.
+Set up CloudWatch Container Insights to monitor EKS resources like nodes, pods, and containers.
+Implement alerts for critical metrics such as CPU/memory usage, pod restarts, and API server errors.
+
+ECS
+----
+
+Q. Your company is migrating to a microservices architecture. The application will be split into multiple services that need to communicate with each other. Which AWS service would you choose, and why?
+
+Answer: Amazon ECS is the best choice for running microservices, as it provides better control over networking and container orchestration.
+ECS allows you to define task definitions, configure service discovery, and use advanced networking features like VPC, ALBs, and service meshes. 
+This flexibility makes ECS more suitable for managing complex microservices environments.
+
+
+Q. Describe how you would deploy an application using AWS ECS.
+
+Question Overview: Demonstrating a practical application of ECS deployment is key to understanding its operational use. Answer: Deploying an application on AWS ECS involves several steps:
+
+Create a Task Definition: Define your application with one or more containers, specifying the Docker image, CPU, memory, ports, and environment variables.
+Set Up a Cluster: Create an ECS cluster which will host your application. You can choose between EC2 and Fargate launch types.
+Configure a Service: Create a service within your cluster, specifying the task definition to use, the desired number of tasks, and (if needed) the load balancer to distribute traffic to your tasks.
+Deploy: Launch your service. ECS schedules and runs your tasks according to the configuration. For updates, you can create a new version of your task definition and update the service to use the new version, enabling rolling updates.
+Monitor: Utilize AWS CloudWatch to monitor the performance and logs of your containers and cluster, adjusting resources as needed.
+
+Q. Your company is looking to run a containerized application on AWS with the goal of minimizing costs. What would you recommend: ECS on EC2 or ECS on Fargate?
+
+Answer: If cost optimization is the priority, ECS on EC2 is a better option because it allows you to use Reserved Instances or Spot Instances, which can significantly reduce costs. 
+
+ECS on Fargate is serverless and simplifies management but may be more expensive for long-running applications due to its pay-per-use pricing model.
+
+Q. How would you ensure high availability and disaster recovery for an application deployed using ECS?
+
+Answer:
+
+Use multiple ECS clusters across different AWS regions for disaster recovery.
+Configure ECS services with an Application Load Balancer (ALB) to ensure high availability.
+Use ECS task placement strategies to distribute tasks across multiple Availability Zones.
+Implement automated backups for data and configuration using AWS Backup or S3.
+
+
+Q. You notice that the ECS cluster’s CPU utilization is consistently high during peak hours. How would you address this issue?
+
+View the Amazon ECS service event logs
+
+View the CPU utilization for the container instance (EC2)
+
+Choose the Monitoring tab, and then check the CPU utilization (%) card for the container instance CPU usage metrics.
+
+View the cpU utilization for the Amazon ECS service
+Use the Amazon ECS console to check the service metrics and the average CPU and maximum CPU for Amazon ECS.
+
+Check your load balancer request metrics
+
+Network ELB check ActiveFlowCount and NewFlowCount metrics.
+
+for Application Load Balancer, then check the ActiveConnectionCount metric.
+
+
+Q. A new application requires specialized hardware configurations that are not available in the existing ECS cluster. How would you handle this situation?
+
+Task Placement Strategies:
+- Define task placement constraints and strategies to control where tasks are placed within your cluster.
+- Use task placement constraints to specify instance attributes or custom attributes for task placement, ensuring optimal resource utilization and performance.
+
+Q. You need to ensure that critical tasks are always running in the ECS cluster, even in the event of instance failures. How would you achieve high availability for these tasks?
+
+
+
+Q. You have a batch processing job that needs to run at a specific time each day. How would you schedule this task in ECS?
+
+- ECS supports task scheduling using Amazon ECS Task Scheduler or third-party schedulers like Kubernetes or Nomad.
+- Schedule tasks to run at specific times or intervals, or in response to events or triggers using AWS Lambda or Amazon EventBridge.
+
+
+Q. Your team is deploying a new version of a microservice to the ECS cluster. How would you perform a rolling update to minimize downtime?
+
+Configure deployment strategies such as rolling updates or blue/green deployments to minimize downtime and ensure high availability.
+
+Q. You need to implement service discovery for a set of microservices running in the ECS cluster. How would you approach this task?
+
+Use AWS Cloud Map for service discovery, allowing tasks within your ECS cluster to discover and communicate with each other using DNS.
+Configure Elastic Load Balancing (ELB) or Application Load Balancers (ALB) to distribute traffic across tasks within your ECS service.
+
